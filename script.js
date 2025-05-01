@@ -3,16 +3,16 @@ const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRYaXiI0WHt73BCQa69
 async function carregarAnimais() {
   const resposta = await fetch(url);
   const texto = await resposta.text();
-  const linhas = texto.split("\n").slice(1); // pula o cabeçalho
+  const linhas = texto.split("\n").slice(1); // Ignora o cabeçalho
   const div = document.getElementById("animais");
   div.innerHTML = "";
 
   linhas.forEach(linha => {
-    const colunas = linha.split(",");
-    if (colunas.length > 1) {
-      const nome = colunas[0];
-      const especie = colunas[1];
-      const idade = colunas[2];
+    const colunas = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); // separa colunas corretamente
+    if (colunas.length > 2) {
+      const nome = colunas[0]?.replace(/"/g, "").trim();
+      const especie = colunas[1]?.replace(/"/g, "").trim();
+      const idade = colunas[2]?.replace(/"/g, "").trim();
 
       const card = document.createElement("div");
       card.className = "card";
@@ -23,3 +23,4 @@ async function carregarAnimais() {
 }
 
 carregarAnimais();
+corrigido script para ler CSV corretamente
